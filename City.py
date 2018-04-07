@@ -1,6 +1,6 @@
 class City(object):
-    order = None
-    identity = None
+    order = None # order in which salesperson traverses
+    identity = None # order in the qubit structure
 
     def __init__(self, identity=None, order=None):
         if (identity):
