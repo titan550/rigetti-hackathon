@@ -39,20 +39,29 @@ def U_biuv(B, i, u, v):
 
 
 # assumption that the partition includes tuples of (i, u, v)
-def U_partition(B, partition):
+def U_partition(B, city_partition, order_partition):
     result = PauliTerm("I", 0, 1)
 
-    for entry in partition:
-        i = entry[0]
-        u = entry[1]
-        v = entry[2]
-        result *= U_biuv(B, i, u, v)
+    for i in order_partition:
+        for u, v in city_partition:
+            result *= U_biuv(B, i, u, v)
 
     return result
 
 
-def color_parity_mixer(B, partitions):
+def color_parity_mixer(B, city_partitions, order_partitions):
+    '''
+    implements the color parity mixer for the Travelling Salesperson Problem found in arXiv:1709.03489
+
+    :param B:
+    :param city_partitions: list of city partitions (which are lists themselves of tuples of cities).
+                            Equivalent to the color partitions in the original algorithm
+    :param order_partitions: list of order partitions (which are lists themselves of orders).
+                            Equivalent to the parity partitions in the original algorithm
+    :return:
+    '''
     result = PauliTerm("I", 0, 1)
 
-    for partition in partitions:
-        result *= U_partition(B, partition)
+    for order_partition in order_partitions:
+        for city_partition in city_partitions:
+            result *= U_partition(B, city_partition, order_partition)
