@@ -18,7 +18,7 @@ class Universe(object):
         self.program = program
 
 # i u v
-    def h_all(self, side, n, city1, city2):
+    def h_all(self, side, n):
         result = 0
         if side == 0: # even
             for n1 in range(0, n, 2):
@@ -39,10 +39,11 @@ class Universe(object):
     def h(self, i, u, v):
         return self.map.get_distance(u, v) * self.z(u, i) * self.z(v * i + 1)
 
-    def h2(self, partition, i):
+    def h2(self, partition, i_list):
         result = 0
         for uv in partition:
-            result += self.h(uv[0],uv[1],i)
+            for i in i_list:
+                result += self.h(uv[0],uv[1],i)
         return result
 
     def z(self, city_index, row_index):

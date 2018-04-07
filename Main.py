@@ -7,7 +7,7 @@ from pyquil.quil import Program
 map_matrix = np.matrix('1 1 1 1; 1 1 1 1; 1 1 1 1; 1 1 1 1')
 map = Map(map_matrix)
 
-cities = [City() for i in range(4)]
+cities = [City(identity=i) for i in range(4)]
 
 program = Program()
 
