@@ -1,4 +1,4 @@
-from pyquil.paulis import exponentiate, PauliSum, PauliTerm
+from pyquil.paulis import exponentiate, PauliSum, PauliTerm, check_commutation, exponentiate_commuting_pauli_sum
 
 # hardcoded to 4 for now
 def get_qubit(city, order, num_cities=4):
@@ -31,4 +31,28 @@ def U_biuv(B, i, u, v):
     H = H_iuv(i, u, v)
     term = PauliTerm("I", 0, B) * H
 
-    return exponentiate(term)
+    # TODO: how much will check_commutation slow down the computations?
+    if check_commutation(term):
+        return exponentiate_commuting_pauli_sum(term)
+    else:
+        return exponentiate(term)
+
+
+# assumption that the partition includes tuples of (i, u, v)
+def U_partition(B, partition):
+    result = PauliTerm("I", 0, 1)
+
+    for entry in partition:
+        i = entry[0]
+        u = entry[1]
+        v = entry[2]
+        result *= U_biuv(B, i, u, v)
+
+    return result
+
+
+def color_parity_mixer(B, partitions):
+    result = PauliTerm("I", 0, 1)
+
+    for partition in partitions:
+        result *= U_partition(B, partition)
