@@ -16,23 +16,26 @@ class Universe(object):
         self.map = map
         self.program = program
 
-    def H(self, side, n, city1, city2, index):
+# i u v
+    def h_all(self, side, n, city1, city2):
+        sum = 0
         if side == 0: # even
             for n1 in range(0, n, 2):
                 for n2 in range(0, n):
                     for n3 in range(0, n):
-                        map.get_distance(city1, city2)*self.z(n2,n1)*self.z(n3*n1+1)
+                        sum += self.H(n1, n2, n3)
 
         elif side == 1: # odd
             for n1 in range(0, n):
-                if(n1%2 == 1):
+                if n1%2 == 1:
                     for n2 in range(0, n):
                         for n3 in range(0, n):
-                            map.get_distance(city1, city2) * self.z(n2, n1) * self.z(n3 * n1 + 1)
-
-
+                            sum += self.H(n1, n2, n3)
         else:
-            raise ValueError("Must be zero (even) or one (odd)")
+            raise ValueError("Side must be zero (even) or one (odd)")
+
+    def h(self, i, u, v):
+        return map.get_distance(u, v) * self.z(u, i) * self.z(v * i + 1)
 
     def z(self, city_index, row_index):
         self.program.inst(Z(city_index * 4 + row_index))
