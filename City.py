@@ -9,7 +9,7 @@ class City(object):
             self.order = order
 
     def distance(self, map, neighbor):
-        return map[self.identity][neighbor.identity]
+        return map.get_distance(self.identity, neighbor.identity)
 
-    def z(self, index):
-
+    def z(self, index, program):
+        program.inst(Z(identity*4 + index))
