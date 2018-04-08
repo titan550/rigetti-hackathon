@@ -1,5 +1,6 @@
 from pyquil.quil import Program
 from pyquil.gates import *
+from pyquil.paulis import PauliTerm
 import City, Map
 from pyquil.quil import Program
 
@@ -8,7 +9,7 @@ class Universe(object):
     state = None
     cities = None
     map = None
-    program = None
+    pauli_term = None
 
     def __init__(self, cities, map, program):
         self.state = Program()
@@ -39,12 +40,14 @@ class Universe(object):
     def h(self, i, u, v):
         return self.map.get_distance(u, v) * self.z(u, i) * self.z(v * i + 1)
 
-    def h2(self, partition, i_list):
+    def h2(self, city_partitions, order_partition):
         result = 0
-        for uv in partition:
-            for i in i_list:
-                result += self.h(uv[0],uv[1],i)
+        for partition in city_partitions:
+            for u, v in partition:
+                for i in order_partition:
+                    result += self.h(u, v, i)
         return result
 
     def z(self, city_index, row_index):
-        self.program.inst(Z(city_index * 4 + row_index))
+        #self.program.inst(Z(city_index * 4 + row_index))
+        return PauliTerm("Z", city_index * 4 + row_index)
